@@ -1,7 +1,7 @@
 //Initialisation du local storage
-let produitDansLocalStorage = JSON.parse(localStorage.getItem("produits"));
+let produitDansLocalStorage = JSON.parse(localStorage.getItem("produits")); //transforme la chaîne JSON ()en un objet JavaScript / etape 1//
 // Si le panier est vide
-function createBasket(produitDansLocalStorage) {
+function createBasket(produitDansLocalStorage) { // fonction qui va recuperer les elements du local storage
   var cart__items = document.getElementById("cart__items");
   if (produitDansLocalStorage === null) { // égalité stricte 
     let panierVide = document.createElement("p");
@@ -11,7 +11,7 @@ function createBasket(produitDansLocalStorage) {
     // Si le panier contient des articles    
   } else {
     let produitPanier = [];
-    for (let i = 0; i < produitDansLocalStorage.length; i++) { // index 0, Condition, incrémentation de l'index
+    for (let i = 0; i < produitDansLocalStorage.length; i++) { // on boucle pour récuperer les informations du local storage
 
       // Création article
       let article = document.createElement("article");
@@ -74,7 +74,7 @@ function createBasket(produitDansLocalStorage) {
       cartItemContentSettingsDelete.appendChild(deleteItem).textContent = "Supprimer";
 
 
-      fetch(`http://localhost:3000/api/products/${produitDansLocalStorage[i]._id}`)
+      fetch(`http://localhost:3000/api/products/${produitDansLocalStorage[i]._id}`) //Appel de l'API 
         .then(function (res) {
           if (res.ok) {
             return res.json();
@@ -97,7 +97,7 @@ function createBasket(produitDansLocalStorage) {
         //Nom du produit
         let productName = document.createElement("h2");
         cartItemContentTitlePrice.appendChild(productName).textContent = value.name;
-        //Prix produit
+        //Prix du produit
         let productPrice = document.createElement("p")
         cartItemContentColor.appendChild(productPrice).textContent = value.price + " €"
       }
@@ -105,47 +105,24 @@ function createBasket(produitDansLocalStorage) {
   }
 }
 
-createBasket(produitDansLocalStorage);
-
-
+createBasket(produitDansLocalStorage); // Appel de la fonction createBasket / etape 2
+// appeler totalquantity , faire fonction avec prix si possible ! essayer de mettre ca dans des fonction
+changeQuantity ()
+PanierTotals ()
+deleteProduct()
 // total des quantités
 
+// Fonction pour calculer la quantité totale des produits dans le panier
+function PanierTotals () {
 let totalQuantity = 0
-if (produitDansLocalStorage != null) {
+if (produitDansLocalStorage != null) { // Inégalité
   for (let j = 0; j < produitDansLocalStorage.length; j++) {
-    totalQuantity += parseInt(produitDansLocalStorage[j].quantity);
+    totalQuantity += parseInt(produitDansLocalStorage[j].quantity); // Addition des sommes
+    
     // affichage de la quantité
-
     let productTotalQuantity = document.getElementById("totalQuantity")
     productTotalQuantity.textContent = totalQuantity;
   }
-
-  //function changeQuantity() {
-
-    let itemQuantity = document.querySelectorAll(".itemQuantity");
-  
-  
-    for (let j = 0; j < itemQuantity.length; j++) {
-      itemQuantity[j].addEventListener("change", (event) => {
-        event.preventDefault()
-
-        //Sélection de l'élement selon son id et sa couleur
-        let itemNew = produitDansLocalStorage[j].quantity;
-        let itemModif = itemQuantity[j].valueAsNumber;
-  
-        const result = produitDansLocalStorage.find( // recherche dans le localStorage le premier élément qui correspond à (element)
-          (element) => element.itemModif !== itemNew); // Comparaison des valeurs de l'élément présent sur itemQuantity avec une inégalité stricte de sa valeur dans le localStorage
-  
-        result.quantity = itemModif; // le resultat du changement sera defini comme la nouvelle valeur affiché
-        produitDansLocalStorage[j].quantity = result.quantity; // la quantité de l'élément dans le localStorage sera égale à notre valeur "result"
-  
-        localStorage.setItem("produits", JSON.stringify(produitDansLocalStorage));// Réécriture du localStorage, le stringify passe l'objet en chaine de caractere
-  
-  
-      });//fin addeventlistener
-    }
-// }
-// changeQuantity()  
 
 // Calcul du prix panier
 
@@ -167,6 +144,7 @@ if (produitDansLocalStorage != null) {
       .catch(function (error) {
         // Une erreur est survenue
       });
+
     function totalPrices(value) {
 
 
@@ -184,8 +162,43 @@ if (produitDansLocalStorage != null) {
     }
   }
 }
+}
 
 
+
+   // Modifier la quantité d'un produit dans le panier 
+
+  function changeQuantity () { //addeventlistener("change", function(e))
+
+    let itemQuantity = document.getElementsByClassName("itemQuantity");
+    console.log(itemQuantity)
+  
+  
+    for (let j = 0; j < itemQuantity.length; j++) {
+      itemQuantity[j].addEventListener("change", (event) => { // appeler la fonction BasketTotals ppour eviter de rafraichir la page
+        event.preventDefault() // empecher le comportement par défaut de l'élément //
+        console.log(event.currentTarget.value)
+
+  // Copie du tableau produitDansLocalStorage dans newLocalStorage :
+  let newLocalStorage = produitDansLocalStorage ;
+  console.log(newLocalStorage) // valeur du LC modifié suite a la modification d'un élément
+ 
+    
+//On modifie la quantité d'un élément à chaque index [j] du tableau écouté :
+    newLocalStorage[j].quantity = itemQuantity[j].value;
+
+//Mise à jour du local storage :
+    localStorage.setItem("produits", JSON.stringify(newLocalStorage));
+
+  PanierTotals ()
+    deleteProduct()
+      });//fin addeventlistener
+    }
+ 
+  }
+
+
+function deleteProduct() {
 // bouton supprimer 
 const btnSupprimer = document.getElementsByClassName("deleteItem");
 var articlesLocalStorage = JSON.parse(localStorage.getItem("produits")); // <<< on recupère le localStorage
@@ -197,42 +210,43 @@ for (let j = 0; j < btnSupprimer.length; j++) {
     window.location.reload(true);
   })
 }
+}
 // Création du Formulaire //
 
-// FORMULAIRE //
-//Instauration formulaire avec regex
 function getForm() {
   
+  // variable qui contient le formulaire //
   let form = document.querySelector(".cart__order__form");
 
-  // Ecoute de la modification du prénom
-  form.firstName.addEventListener('change', function () {
-    validFirstName(this);
-  });
 
   // Ecoute de la modification du prénom
-  form.lastName.addEventListener('change', function () {
-    validLastName(this);
+  form.firstName.addEventListener('change', function () {// fonction de callback pour réaliser une action
+    validFirstName(this); // appeler la fonction en passant un parametre de l'élément écouté
   });
 
-  // Ecoute de la modification du prénom
+  // Ecoute de la modification du nom
+  form.lastName.addEventListener('change', function () { 
+    validLastName(this); 
+  });
+
+  // Ecoute de la modification de l'adresse
   form.address.addEventListener('change', function () {
     validAddress(this);
   });
 
-  // Ecoute de la modification du prénom
+  // Ecoute de la modification de la ville
   form.city.addEventListener('change', function () {
     validCity(this);
   });
 
-  // Ecoute de la modification du prénom
+  // Ecoute de la modification de l'email
   form.email.addEventListener('change', function () {
     validEmail(this);
   });
 
   //validation du prénom
   const validFirstName = function (inputFirstName) {
-    let firstNameRegExp = new RegExp('/^[a-zA-Z0-9]+$/');
+    let firstNameRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
     let firstNameErrorMsg = inputFirstName.nextElementSibling;
     
 
@@ -245,7 +259,7 @@ function getForm() {
 
   //validation du nom
   const validLastName = function (inputLastName) {
-    let lastNameRegExp = new RegExp('/^[a-zA-Z0-9]+$/');
+    let lastNameRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
     let lastNameErrorMsg = inputLastName.nextElementSibling;
 
     if (lastNameRegExp.test(inputLastName.value)) {
@@ -263,7 +277,7 @@ function getForm() {
     if (addressRegExp.test(inputAddress.value)) {
       addressErrorMsg.innerHTML = '';
     } else {
-      addressErrorMsg.innerHTML = "Veuillez indiquez une adresse valide. ex : 15 du commerce";
+      addressErrorMsg.innerHTML = "Veuillez indiquez une adresse valide. ex : 15 rue du commerce";
     }
   };
 
@@ -345,6 +359,7 @@ function postForm() {
     //Renvoi de l'orderId dans l'URL de la page confirmation
     document.location.href = 'confirmation.html?id='+ data.orderId;
   })
+
    } else {
     // sinon toutes les conditions ne sont pas remplies alors le formulaire n'est pas validé
     alert("Veuillez remplir le formulaire de contact ou ajouter un article dans votre panier.");

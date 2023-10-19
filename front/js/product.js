@@ -2,14 +2,14 @@
 
 
     function getArticleId() {
-      return new URL(location.href).searchParams.get("id")
+      return new URL(location.href).searchParams.get("id") // fonction qui récupère l'id contenu dans l'url de la page actuelle
     }
   
     const id = getArticleId()
     console.log(id)
   
   
-    fetch(`http://localhost:3000/api/products/${id}`)
+    fetch(`http://localhost:3000/api/products/${id}`) // Appel API en fonction de l'id des produits
   
       .then(function (reponse) { // Promesse
         if (reponse.ok) {
@@ -24,8 +24,8 @@
         // bloc erreur
       });
   
-  
-    function displayProduct(value) {
+  //création d'une fonction pour afficher les produits
+    function displayProduct(value) { 
       document.getElementById('title').textContent = value.name;
       document.getElementById('price').textContent = value.price;
       document.getElementById('description').textContent = value.description;
@@ -37,10 +37,10 @@
   
   
       //Boucle pour les couleurs disponibles du produit
-      for (color of value.colors) {
+      for (ElementColor of value.colors) {
         const productColors = document.createElement("option");
         document.querySelector("#colors").appendChild(productColors);
-        productColors.innerHTML = color;
+        productColors.innerHTML = ElementColor;
       }
   
       addToCart();
@@ -49,18 +49,20 @@
   
     //---------------Gestion du panier --------------//
   
+    // création d'une fonction pour l'ajout au panier
     function addToCart() {
   
+      // Récupération des éléments //
       const addBtn = document.getElementById("addToCart");
       console.log(addBtn)
       const quantity = document.getElementById("quantity");
       const colors = document.getElementById("colors");
       console.log(colors)
   
-  
+  // Ecoute des évènements avec addEvent listener //
       addBtn.addEventListener("click", (event) => { //
-        if (colors.value !== "" && quantity.value != 0 && quantity.value <= 100) {
-          let produitData = {
+        if (colors.value !== "" && quantity.value != 0 && quantity.value <= 100) { 
+          let produitData = { 
             _id: id,
             colors: colors.value,
             quantity: quantity.value
@@ -84,8 +86,8 @@
             // s'il n'y a pas de produits enregistrés dans le local storage //
   
             productTableau = []  // alors produit tableau est un tableau vide //
-            productTableau.push(produitData);
-            localStorage.setItem("produits", JSON.stringify(productTableau));
+            productTableau.push(produitData); //  permet d'ajouter des valeurs à un tableau
+            localStorage.setItem("produits", JSON.stringify(productTableau)); // sauvegarder des informations dans le LS, puis la conversion en chaîne JSON
             console.log(productTableau);
             alert("Bravo, le produit a été enregistré");
           }
@@ -101,13 +103,15 @@
     function addLocalStorage(products, elementsLocalStorage) {
   
   
-      for (var i = 0; i < elementsLocalStorage.length; i++) { // <<< standard, on boucle dans le localStorage récupéré
-        if (elementsLocalStorage[i]._id === products._id && elementsLocalStorage[i].colors === products.colors) { // <<< Vérif si article et couleurs existantes 
-          let QteelementsLocalStorage = parseInt(elementsLocalStorage[i].quantity) + parseInt(products.quantity); // <<< Quantité modifiée
-          elementsLocalStorage[i].quantity = QteelementsLocalStorage; // <<< On colle tout ça dans la variable
+      for (var i = 0; i < elementsLocalStorage.length; i++) { // on boucle dans le localStorage récupéré
+        if (elementsLocalStorage[i]._id === products._id && elementsLocalStorage[i].colors === products.colors) { //  Vérification si articles et couleurs existantes 
+          
+          let QteelementsLocalStorage = parseInt(elementsLocalStorage[i].quantity) + parseInt(products.quantity); //  Quantité modifiée
+         
+          elementsLocalStorage[i].quantity = QteelementsLocalStorage; // On colle tout ça dans la variable
   
-          localStorage.setItem("produits", JSON.stringify(elementsLocalStorage)); // <<< Et on met ça dans le localstorage
-          return 1;
+          localStorage.setItem("produits", JSON.stringify(elementsLocalStorage)); //JSON.stringify() convertit un objet en JSON ,On envoie dans le localstorage
+        
         }
       }
       elementsLocalStorage.push(products);

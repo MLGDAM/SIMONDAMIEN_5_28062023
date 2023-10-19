@@ -4,9 +4,9 @@ if (reponse.ok) {
   return reponse.json(); // C'est ok donc on peut traiter le fichier
 }
 })
-.then(function(products) {
+.then(function(products) { //
 creationArticleKanap(products); // On appelle une fonction pour traiter les données
-console.log(products)   // Visualisation des données reçues (ton fichier json)
+console.log(products)   // Visualisation des données reçues ( fichier json)
 })
 .catch(function(error) {
 // bloc erreur
@@ -15,11 +15,13 @@ console.log(products)   // Visualisation des données reçues (ton fichier json)
 
 
 function creationArticleKanap(products) {
-for (let i = 0; i < products.length; i++) { 
-  // Ici ton code pour créer les éléments html
+for (let i = 0; i < products.length; i++) { //on crée une boucle à l'intérieur de la fonction
+
   
-  let items = document.getElementById('items');
   
+  let items = document.getElementById('items'); // retourne  l'element HTMLElement à partir de son identifiant, défini dans la propriété id de la balise de l'objet " items"
+  
+  // Création des elements
   let a = document.createElement("a");
   items.appendChild(a).href =`product.html?id=${products[i]._id}`;
 
