@@ -12,9 +12,9 @@ fetch(`http://localhost:3000/api/products/${id}`) // Appel API en fonction de l'
       return reponse.json(); // C'est ok donc on peut traiter le fichier
     }
   })
-  .then(function (products) {
-    displayProduct(products); // On appelle une fonction pour traiter les données
-    console.log(products); // Visualisation des données reçues (ton fichier json)
+  .then(function (value) {
+    displayProduct(value); // On appelle une fonction pour traiter les données
+    console.log(value); // Visualisation des données reçues (ton fichier json)
   })
   .catch(function (error) {
     // bloc erreur
@@ -86,24 +86,24 @@ function addToCart() {
 
 // Si le local storage existe //
 
-function addLocalStorage(products, elementsLocalStorage) {
+function addLocalStorage(value, elementsLocalStorage) {
   for (var i = 0; i < elementsLocalStorage.length; i++) {
     // on boucle dans le localStorage récupéré
     if (
-      elementsLocalStorage[i]._id === products._id &&
-      elementsLocalStorage[i].colors === products.colors
+      elementsLocalStorage[i]._id === value._id &&
+      elementsLocalStorage[i].colors === value.colors
     ) {
       //  Vérification si articles et couleurs existantes
 
       let QteelementsLocalStorage =
-        parseInt(elementsLocalStorage[i].quantity) +
-        parseInt(products.quantity); //  Quantité modifiée
+        parseInt(elementsLocalStorage[i].quantity) + parseInt(value.quantity); //  Quantité modifiée
 
       elementsLocalStorage[i].quantity = QteelementsLocalStorage; // On colle tout ça dans la variable
 
       localStorage.setItem("produits", JSON.stringify(elementsLocalStorage)); //JSON.stringify() convertit un objet en JSON ,On envoie dans le localstorage
+      return 1;
     }
   }
-  elementsLocalStorage.push(products);
+  elementsLocalStorage.push(value);
   localStorage.setItem("produits", JSON.stringify(elementsLocalStorage));
 }

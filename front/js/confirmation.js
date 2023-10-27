@@ -1,4 +1,4 @@
-// creation Variable getItem / récupération du LocalStorage
+// creation Variable orderId / récupération du LocalStorage
 let orderId = localStorage.getItem("orderId");
 
 // récupération du numéro de commande pour l'injecter dans le HTML

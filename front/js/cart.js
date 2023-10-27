@@ -164,7 +164,8 @@ function panierTotals() {
         console.log(produitDansLocalStorage[k].quantity);
         console.log(value);
 
-        totalPrice = totalPrice += produitDansLocalStorage[k].quantity * value.price;
+        totalPrice = totalPrice +=
+          produitDansLocalStorage[k].quantity * value.price;
 
         // Affichage  du prix
 
@@ -353,7 +354,7 @@ function postForm() {
         products,
       };
 
-      // Envoi du formulaire et localStorage (sendFormData) au serveur
+      // Envoi du formulaire et localStorage (submitData) au serveur
 
       const options = {
         method: "POST",
